@@ -23,10 +23,10 @@ void loop() {
 
 bool searchcycle() {
   // Spin
-  rotate_motors(0, 255);
-  rotate_motors_backward(255, 0);
+  rotate_motors(0, 150);
+  rotate_motors_backward(150, 0);
   float distance = find_distance();
-  return distance < 30;
+  return distance < 15;
 }
 
 void debug() {
@@ -64,7 +64,7 @@ void home() {
       
       float distance = find_distance();
 
-      if (distance > 30) {
+      if (distance > 20) {
         rotate_motors(0, 0);
         rotate_motors_backward(0, 0);
 
@@ -113,11 +113,20 @@ const int motorB_pin2 = 10;
 
 // 0-255 range
 void rotate_motors_backward(int left, int right) {
+  //rotate_motors(0,0);
+  //analogWrite(motorA_pin2, 0);
+  //analogWrite(motorB_pin2, 0);
+  
   analogWrite(motorA_pin1, left);
   analogWrite(motorB_pin1, right);
 }
 
 void rotate_motors(int left, int right) {
+  //rotate_motors_backward(0,0);
+
+  //analogWrite(motorA_pin1, 0);
+  //analogWrite(motorB_pin1, 0);
+  
   analogWrite(motorA_pin2, left);
   analogWrite(motorB_pin2, right);
 }
