@@ -22,6 +22,8 @@ bool searchcycle() {
 void home() {
   // We've found something, now we're going to home in. Once we're < 5cm we stay there till it disappears, then exit.
   int forwardAmount = 0;
+  float timeOn = 0;
+  float startTime = millis();
 
   while (true) {
       rotate_motors(30, 30);
@@ -29,9 +31,19 @@ void home() {
       
       float distance = find_distance();
       if (distance > 10) {
+        rotate_motors(0, 0);
+        rotate_motors_backward(0, 0);
+        
+        timeOn = timeOn + (millis() - startTime);
+        startTime = millis();
         // We've lost it before the 5cm mark. TODO make this go left/right trying to find it.
       }
       if (distance < 5) {
+        rotate_motors(0, 0);
+        rotate_motors_backward(0, 0);
+
+        timeOn = timeOn + (millis() - startTime);
+           
         // We've found it. Stay here until it disappears.
         while (distance < 5.5) {
            float distance = find_distance();
@@ -42,7 +54,11 @@ void home() {
       }
   }
 
-  // TODO go back to start pos and rot. Takes tuning so not doing now.
+  // timeOn is how long we need to run it backwards
+  float startReturnTime = millis();
+  while (millis() - startReturnTime < timeOn) {
+    rotate_motors_backward(30, 30);
+  }
 }
 
 // Nice funcs: pinMode(pin, type) - input or output
@@ -61,6 +77,11 @@ const int motorB_pin2 = 10;
 void rotate_motors(int left, int right) {
   analogWrite(motorA_pin1, left);
   analogWrite(motorB_pin1, right);
+}
+
+void rotate_motors_backward(int left, int right) {
+  analogWrite(motorA_pin2, left);
+  analogWrite(motorB_pin2, right);
 }
 
 // Ultrasonic in centimetres
